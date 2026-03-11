@@ -15,12 +15,12 @@ pub struct Pause<'info> {
     )]
     pub config: Account<'info, StablecoinConfig>,
 
-    /// CHECK: Role assignment for Pauser role.
+    /// Role assignment PDA for the Pauser role — must exist.
     #[account(
         seeds = [ROLE_SEED, config.key().as_ref(), pauser.key().as_ref(), &[3u8]],
-        bump,
+        bump = role_assignment.bump,
     )]
-    pub role_assignment: UncheckedAccount<'info>,
+    pub role_assignment: Account<'info, crate::state::RoleAssignment>,
 }
 
 pub fn handler(ctx: Context<Pause>) -> Result<()> {
@@ -45,12 +45,12 @@ pub struct Unpause<'info> {
     )]
     pub config: Account<'info, StablecoinConfig>,
 
-    /// CHECK: Role assignment for Pauser role.
+    /// Role assignment PDA for the Pauser role — must exist.
     #[account(
         seeds = [ROLE_SEED, config.key().as_ref(), pauser.key().as_ref(), &[3u8]],
-        bump,
+        bump = role_assignment.bump,
     )]
-    pub role_assignment: UncheckedAccount<'info>,
+    pub role_assignment: Account<'info, crate::state::RoleAssignment>,
 }
 
 pub fn handler_unpause(ctx: Context<Unpause>) -> Result<()> {

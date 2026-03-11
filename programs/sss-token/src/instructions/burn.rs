@@ -19,13 +19,12 @@ pub struct BurnTokens<'info> {
     )]
     pub config: Account<'info, StablecoinConfig>,
 
-    /// CHECK: The role assignment PDA for the burner role.
-    /// Validated by seeds constraint in the instruction handler.
+    /// Role assignment PDA for the Burner role — must exist.
     #[account(
         seeds = [ROLE_SEED, config.key().as_ref(), burner.key().as_ref(), &[1u8]],
-        bump,
+        bump = role_assignment.bump,
     )]
-    pub role_assignment: UncheckedAccount<'info>,
+    pub role_assignment: Account<'info, crate::state::RoleAssignment>,
 
     /// CHECK: Token-2022 mint account.
     #[account(mut)]

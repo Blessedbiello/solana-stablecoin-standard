@@ -5,6 +5,7 @@ use anchor_spl::token_2022::spl_token_2022::{
     extension::ExtensionType,
     instruction as token_instruction,
 };
+use spl_token_metadata_interface::state::TokenMetadata;
 use sss_compliance::Preset;
 
 use crate::constants::*;
@@ -94,30 +95,37 @@ pub fn handler(ctx: Context<Initialize>, params: InitializeParams) -> Result<()>
         extensions.push(ExtensionType::TransferHook);
     }
 
-    // 3. Calculate space and create mint account
-    let mint_space = ExtensionType::try_calculate_account_len::<spl_token_2022::state::Mint>(
+    // 3. Calculate space — Token-2022 requires EXACT size for extensions.
+    // Metadata is added later via realloc, so only allocate extension space now.
+    let extension_space = ExtensionType::try_calculate_account_len::<spl_token_2022::state::Mint>(
         &extensions,
     )
     .map_err(|_| SssError::Overflow)?;
 
-    // Add space for on-chain metadata
-    let metadata_space = 4  // discriminator for metadata
-        + 32  // update authority
-        + 32  // mint
-        + 4 + params.name.len()
-        + 4 + params.symbol.len()
-        + 4 + params.uri.len()
-        + 4;  // additional metadata vec
-    let total_space = mint_space + metadata_space;
-    let rent_lamports = Rent::get()?.minimum_balance(total_space);
+    // Calculate metadata space for rent pre-funding
+    let token_metadata = TokenMetadata {
+        mint: mint_key,
+        name: params.name.clone(),
+        symbol: params.symbol.clone(),
+        uri: params.uri.clone(),
+        update_authority: spl_pod::optional_keys::OptionalNonZeroPubkey::try_from(Some(config_key))
+            .map_err(|_| SssError::InvalidParameter)?,
+        additional_metadata: vec![],
+    };
+    let metadata_space = token_metadata
+        .tlv_size_of()
+        .map_err(|_| SssError::Overflow)?;
 
-    // Create mint account
+    // Fund the mint with enough rent for extensions + metadata (after realloc)
+    let total_rent = Rent::get()?.minimum_balance(extension_space + metadata_space);
+
+    // Create mint account with exact extension space, but fund for full size
     invoke_signed(
         &anchor_lang::solana_program::system_instruction::create_account(
             ctx.accounts.authority.key,
             &mint_key,
-            rent_lamports,
-            total_space as u64,
+            total_rent,
+            extension_space as u64,
             &spl_token_2022::ID,
         ),
         &[
@@ -128,7 +136,7 @@ pub fn handler(ctx: Context<Initialize>, params: InitializeParams) -> Result<()>
         &[mint_seeds],
     )?;
 
-    // 4. Initialize extensions (order matters!)
+    // 4. Initialize extensions (order matters — all before InitializeMint2)
 
     // 4a. Permanent delegate (SSS-2+)
     if preset.has_permanent_delegate() {
@@ -163,7 +171,7 @@ pub fn handler(ctx: Context<Initialize>, params: InitializeParams) -> Result<()>
         )?;
     }
 
-    // 4c. Metadata pointer
+    // 4c. Metadata pointer (points to self)
     invoke_signed(
         &spl_token_2022::extension::metadata_pointer::instruction::initialize(
             &spl_token_2022::ID,
@@ -175,27 +183,27 @@ pub fn handler(ctx: Context<Initialize>, params: InitializeParams) -> Result<()>
         &[],
     )?;
 
-    // 4d. Initialize mint
+    // 4d. Initialize mint (validates account size == extension space exactly)
     invoke_signed(
         &token_instruction::initialize_mint2(
             &spl_token_2022::ID,
             &mint_key,
-            &config_key, // mint authority
-            Some(&config_key), // freeze authority
+            &config_key,
+            Some(&config_key),
             params.decimals,
         )?,
         &[ctx.accounts.mint.to_account_info()],
         &[],
     )?;
 
-    // 4e. Initialize token metadata
+    // 4e. Initialize token metadata (Token-2022 handles realloc internally)
     invoke_signed(
         &spl_token_metadata_interface::instruction::initialize(
             &spl_token_2022::ID,
             &mint_key,
-            &config_key, // update authority
+            &config_key,
             &mint_key,
-            &config_key, // mint authority
+            &config_key,
             params.name.clone(),
             params.symbol.clone(),
             params.uri.clone(),

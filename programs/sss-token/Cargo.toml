@@ -27,3 +27,4 @@ sss-math = { path = "../../modules/sss-math" }
 sss-roles = { path = "../../modules/sss-roles" }
 sss-compliance = { path = "../../modules/sss-compliance" }
 spl-token-metadata-interface = { workspace = true }
+spl-pod = { workspace = true }

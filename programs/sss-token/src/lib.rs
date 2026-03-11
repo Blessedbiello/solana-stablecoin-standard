@@ -8,7 +8,7 @@ pub mod state;
 
 use instructions::*;
 
-declare_id!("SSStknEMBywDwXbHqJV84QYUqzBMpJRwghZbTRqJBmY");
+declare_id!("VuhEhakwgobFN7L3fJJJCu4HTrV1mahAt8MUxiPnxwB");
 
 #[program]
 pub mod sss_token {
@@ -85,7 +85,7 @@ pub mod sss_token {
     }
 
     /// Seize tokens from a frozen account using permanent delegate (SSS-2+, requires Seizer role).
-    pub fn seize(ctx: Context<Seize>, amount: u64) -> Result<()> {
+    pub fn seize<'info>(ctx: Context<'_, '_, '_, 'info, Seize<'info>>, amount: u64) -> Result<()> {
         instructions::seize::handler(ctx, amount)
     }
 

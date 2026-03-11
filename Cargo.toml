@@ -16,6 +16,7 @@ spl-token-2022 = "8.0.1"
 spl-transfer-hook-interface = "0.8.2"
 spl-tlv-account-resolution = "0.8.1"
 spl-token-metadata-interface = "0.5.1"
+spl-pod = "0.4.0"
 
 [profile.release]
 overflow-checks = true

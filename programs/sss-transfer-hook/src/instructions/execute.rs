@@ -21,17 +21,17 @@ pub struct Execute<'info> {
     /// CHECK: Extra account metas list.
     pub extra_account_metas: UncheckedAccount<'info>,
 
-    // Extra accounts resolved by Token-2022:
+    // Extra accounts resolved by Token-2022 (must match ExtraAccountMetaList order):
     /// CHECK: Hook config account.
     pub hook_config: Account<'info, TransferHookConfig>,
     /// CHECK: Stablecoin config.
     pub stablecoin_config: UncheckedAccount<'info>,
+    /// CHECK: SSS token program (for PDA derivation).
+    pub sss_token_program: UncheckedAccount<'info>,
     /// CHECK: Source blacklist PDA (may not exist).
     pub source_blacklist: UncheckedAccount<'info>,
     /// CHECK: Destination blacklist PDA (may not exist).
     pub destination_blacklist: UncheckedAccount<'info>,
-    /// CHECK: SSS token program (for PDA derivation).
-    pub sss_token_program: UncheckedAccount<'info>,
 }
 
 pub fn handler(ctx: Context<Execute>, _amount: u64) -> Result<()> {

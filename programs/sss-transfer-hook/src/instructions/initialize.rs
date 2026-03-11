@@ -51,49 +51,66 @@ pub fn handler(ctx: Context<InitializeHook>) -> Result<()> {
 
     // Define extra account metas for blacklist lookups.
     // Token-2022 will resolve these PDAs during transfer_checked.
-    // Extra accounts needed:
-    // 0: hook_config (static)
-    // 1: stablecoin_config (static)
-    // 2: source owner blacklist PDA (derived from sss-token program)
-    // 3: destination owner blacklist PDA (derived from sss-token program)
+    //
+    // Execute instruction fixed accounts (indices 0-4):
+    //   0: source token account
+    //   1: mint
+    //   2: destination token account
+    //   3: authority (owner/delegate)
+    //   4: extra_account_metas validation account
+    //
+    // Extra accounts (indices 5+):
+    //   5 (extra[0]): hook_config (static)
+    //   6 (extra[1]): stablecoin_config (static)
+    //   7 (extra[2]): sss_token_program (static — needed for external PDA derivation)
+    //   8 (extra[3]): source blacklist PDA (external PDA from program at index 7)
+    //   9 (extra[4]): dest blacklist PDA (external PDA from program at index 7)
     let extra_metas = vec![
-        // hook_config — static account
+        // extra[0]: hook_config — static account
         ExtraAccountMeta::new_with_pubkey(&ctx.accounts.hook_config.key(), false, false)?,
-        // stablecoin_config — static account
+        // extra[1]: stablecoin_config — static account
         ExtraAccountMeta::new_with_pubkey(
             &ctx.accounts.stablecoin_config.key(),
             false,
             false,
         )?,
-        // source blacklist PDA: ["blacklist", config, source_owner]
-        // source_owner comes from resolving the owner of account at index 0 (source)
-        ExtraAccountMeta::new_external_pda_with_seeds(
-            0, // program index for sss_token_program
-            &[
-                Seed::Literal {
-                    bytes: b"blacklist".to_vec(),
-                },
-                Seed::AccountKey { index: 7 }, // stablecoin_config (extra meta index 1 -> absolute 7)
-                Seed::AccountKey { index: 2 }, // source authority/owner
-            ],
-            false, // is_signer
-            false, // is_writable
-        )?,
-        // destination blacklist PDA: ["blacklist", config, destination_owner]
-        ExtraAccountMeta::new_external_pda_with_seeds(
-            0,
-            &[
-                Seed::Literal {
-                    bytes: b"blacklist".to_vec(),
-                },
-                Seed::AccountKey { index: 7 }, // stablecoin_config
-                Seed::AccountKey { index: 4 }, // destination authority/owner
-            ],
-            false, // is_signer
-            false, // is_writable
-        )?,
-        // sss-token program for PDA derivation
+        // extra[2]: sss-token program — static (must come before derived PDAs)
         ExtraAccountMeta::new_with_pubkey(&sss_token_program_key, false, false)?,
+        // extra[3]: source blacklist PDA: sss_token::find_pda(["blacklist", config, source_owner])
+        // source_owner is extracted from source token account data at bytes 32..64
+        ExtraAccountMeta::new_external_pda_with_seeds(
+            7, // program at absolute index 7 (sss_token_program)
+            &[
+                Seed::Literal {
+                    bytes: b"blacklist".to_vec(),
+                },
+                Seed::AccountKey { index: 6 }, // stablecoin_config at absolute index 6
+                Seed::AccountData {
+                    account_index: 0, // source token account
+                    data_index: 32,   // owner field offset in token account
+                    length: 32,       // pubkey length
+                },
+            ],
+            false, // is_signer
+            false, // is_writable
+        )?,
+        // extra[4]: destination blacklist PDA: sss_token::find_pda(["blacklist", config, dest_owner])
+        ExtraAccountMeta::new_external_pda_with_seeds(
+            7, // program at absolute index 7 (sss_token_program)
+            &[
+                Seed::Literal {
+                    bytes: b"blacklist".to_vec(),
+                },
+                Seed::AccountKey { index: 6 }, // stablecoin_config at absolute index 6
+                Seed::AccountData {
+                    account_index: 2, // destination token account
+                    data_index: 32,   // owner field offset in token account
+                    length: 32,       // pubkey length
+                },
+            ],
+            false, // is_signer
+            false, // is_writable
+        )?,
     ];
 
     // Calculate space and create the extra metas account

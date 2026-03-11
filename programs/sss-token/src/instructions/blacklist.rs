@@ -18,12 +18,12 @@ pub struct AddToBlacklist<'info> {
     )]
     pub config: Account<'info, StablecoinConfig>,
 
-    /// CHECK: Role assignment for Blacklister role.
+    /// Role assignment for Blacklister role — must exist.
     #[account(
         seeds = [ROLE_SEED, config.key().as_ref(), blacklister.key().as_ref(), &[2u8]],
-        bump,
+        bump = role_assignment.bump,
     )]
-    pub role_assignment: UncheckedAccount<'info>,
+    pub role_assignment: Account<'info, crate::state::RoleAssignment>,
 
     /// CHECK: The address to blacklist.
     pub address: UncheckedAccount<'info>,
@@ -71,12 +71,12 @@ pub struct RemoveFromBlacklist<'info> {
     )]
     pub config: Account<'info, StablecoinConfig>,
 
-    /// CHECK: Role assignment for Blacklister role.
+    /// Role assignment for Blacklister role — must exist.
     #[account(
         seeds = [ROLE_SEED, config.key().as_ref(), blacklister.key().as_ref(), &[2u8]],
-        bump,
+        bump = role_assignment.bump,
     )]
-    pub role_assignment: UncheckedAccount<'info>,
+    pub role_assignment: Account<'info, crate::state::RoleAssignment>,
 
     /// CHECK: The address to remove from blacklist.
     pub address: UncheckedAccount<'info>,
