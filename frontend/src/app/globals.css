@@ -1,0 +1,26 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-gray-950 text-white antialiased;
+  }
+}
+
+/* Wallet adapter modal overrides for dark theme */
+.wallet-adapter-modal-wrapper {
+  background-color: rgba(0, 0, 0, 0.7) !important;
+}
+
+.wallet-adapter-modal-container {
+  background-color: #111827 !important;
+}
+
+.wallet-adapter-button {
+  background-color: #6366f1 !important;
+}
+
+.wallet-adapter-button:hover {
+  background-color: #4f46e5 !important;
+}

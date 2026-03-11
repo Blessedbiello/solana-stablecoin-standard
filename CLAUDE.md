@@ -11,8 +11,8 @@
 | 5. TypeScript SDK | DONE | `feat(sdk): implement TypeScript SDK with presets and compliance module` |
 | 6. CLI | DONE | `feat(cli): add sss-token admin CLI with all commands` |
 | 7. Backend | DONE | `feat(backend): add Docker-containerized API, indexer, and webhook services` |
-| 8. Bonus Features | TODO | |
-| 9. Polish & Docs | TODO | |
+| 8. Bonus Features | IN PROGRESS | |
+| 9. Polish & Docs | DONE | `docs: add complete documentation suite with 17 reference documents` |
 | 10. Devnet Deploy | TODO | |
 
 ## Architecture
