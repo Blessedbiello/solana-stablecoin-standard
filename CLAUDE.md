@@ -8,7 +8,7 @@
 | 2. Core Program | DONE | `feat(programs): implement sss-token core instructions with RBAC` |
 | 3. Transfer Hook | DONE | `feat(programs): add transfer hook program for blacklist enforcement` |
 | 4. Integration Tests | DONE | `test: add integration tests for SSS-1, SSS-2, roles, and edge cases` |
-| 5. TypeScript SDK | TODO | |
+| 5. TypeScript SDK | DONE | `feat(sdk): implement TypeScript SDK with presets and compliance module` |
 | 6. CLI | TODO | |
 | 7. Backend | TODO | |
 | 8. Bonus Features | TODO | |
