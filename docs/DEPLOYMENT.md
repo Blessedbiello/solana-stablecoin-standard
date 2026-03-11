@@ -59,6 +59,22 @@ solana program show VuhEhakwgobFN7L3fJJJCu4HTrV1mahAt8MUxiPnxwB --url devnet
 solana program show 5ADnkQpQx8NZwy8xXSqQW9jbahsQLgQBpTHqpbRTSYgV --url devnet
 ```
 
+### Devnet Deployment Proof
+
+Both programs have been deployed to Solana devnet with the following transactions:
+
+| Program | Program ID | Deploy Signature |
+|---|---|---|
+| sss-token | `VuhEhakwgobFN7L3fJJJCu4HTrV1mahAt8MUxiPnxwB` | `Wa3K4ze7T1LcdzWogLNepHTwq5JmEFRxPtpwfL1DeAnpQMpKU9PDbWnon4jVgjygQXR7HjaCVXRdMYCzETNpUoj` |
+| sss-transfer-hook | `5ADnkQpQx8NZwy8xXSqQW9jbahsQLgQBpTHqpbRTSYgV` | `33eo9fzDCPaaUtrXUBbXccUBAUM8jC5aQWLtPyTamgHdvBWEjTJcdeiZE82yhuv6i8UMzwyFAh3omwBoPbnEjRp2` |
+
+**Deployer**: `9ZW3vicGdW2N4Dgn1vgrznqZwYqwnyLupimTLdK5Ktez`
+**IDL Accounts**: `AyLomk8sMcAQMNytE9YSoQ3JJu5gMY8fC57XLH2H35YQ` (sss-token), `6RxrgZzMYhC5gyUSMQhHBdJTZKUoLkWUTngVaX2hztAx` (sss-transfer-hook)
+
+Verify on Solana Explorer:
+- [sss-token on devnet](https://explorer.solana.com/address/VuhEhakwgobFN7L3fJJJCu4HTrV1mahAt8MUxiPnxwB?cluster=devnet)
+- [sss-transfer-hook on devnet](https://explorer.solana.com/address/5ADnkQpQx8NZwy8xXSqQW9jbahsQLgQBpTHqpbRTSYgV?cluster=devnet)
+
 ### Step 4: Initialize Stablecoin
 
 ```bash
