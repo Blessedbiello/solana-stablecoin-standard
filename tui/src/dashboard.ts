@@ -141,7 +141,6 @@ export class Dashboard {
 
     // --- Config panel (rows 1-3, cols 4-11) --------------------------------
     this.configBox = this.grid.set(1, 4, 3, 8, blessed.box, {
-
       label: " Config ",
       tags: true,
       border: BorderStyle,
@@ -290,8 +289,12 @@ export class Dashboard {
     // Header
     this.headerBox.setContent(this.headerContent());
 
-    // Supply panel
+    // Supply panel text
     this.supplyBox.setContent(this.supplyContent(data.supply));
+
+    // Supply gauge — clamp to [0, 100] to guard against rounding artefacts
+    const pct = Math.max(0, Math.min(100, Math.round(data.supply.circulatingPct)));
+    this.supplyGauge.setPercent(pct);
 
     // Config panel
     this.configBox.setContent(this.configContent(data.config));
