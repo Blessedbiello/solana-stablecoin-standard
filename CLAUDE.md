@@ -10,7 +10,7 @@
 | 4. Integration Tests | DONE | `test: add integration tests for SSS-1, SSS-2, roles, and edge cases` |
 | 5. TypeScript SDK | DONE | `feat(sdk): implement TypeScript SDK with presets and compliance module` |
 | 6. CLI | DONE | `feat(cli): add sss-token admin CLI with all commands` |
-| 7. Backend | TODO | |
+| 7. Backend | DONE | `feat(backend): add Docker-containerized API, indexer, and webhook services` |
 | 8. Bonus Features | TODO | |
 | 9. Polish & Docs | TODO | |
 | 10. Devnet Deploy | TODO | |
