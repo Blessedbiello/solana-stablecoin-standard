@@ -1,0 +1,27 @@
+[workspace]
+members = [
+    "programs/sss-token",
+    "programs/sss-transfer-hook",
+    "modules/sss-math",
+    "modules/sss-roles",
+    "modules/sss-compliance",
+    "modules/sss-oracle",
+]
+resolver = "2"
+
+[workspace.dependencies]
+anchor-lang = "0.32.1"
+anchor-spl = "0.32.1"
+spl-token-2022 = "8.0.1"
+spl-transfer-hook-interface = "0.8.2"
+spl-tlv-account-resolution = "0.8.1"
+spl-token-metadata-interface = "0.5.1"
+
+[profile.release]
+overflow-checks = true
+lto = "fat"
+codegen-units = 1
+
+[profile.release.build-override]
+opt-level = 3
+incremental = false

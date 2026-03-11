@@ -1,0 +1,8 @@
+[package]
+name = "sss-oracle"
+version = "0.1.0"
+description = "Solana Stablecoin Standard — Oracle feed reader for peg monitoring"
+edition = "2021"
+
+[dependencies]
+anchor-lang = { workspace = true }

@@ -1,0 +1,8 @@
+[package]
+name = "sss-roles"
+version = "0.1.0"
+description = "Solana Stablecoin Standard — Role definitions and validation helpers"
+edition = "2021"
+
+[dependencies]
+anchor-lang = { workspace = true }

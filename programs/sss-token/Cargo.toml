@@ -1,0 +1,29 @@
+[package]
+name = "sss-token"
+version = "0.1.0"
+description = "Solana Stablecoin Standard — Core Token Program"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+name = "sss_token"
+
+[features]
+no-entrypoint = []
+no-idl = []
+no-log-ix-name = []
+cpi = ["no-entrypoint"]
+default = []
+sss-3 = []
+oracle = []
+idl-build = ["anchor-lang/idl-build", "anchor-spl/idl-build"]
+
+[dependencies]
+anchor-lang = { workspace = true, features = ["init-if-needed"] }
+anchor-spl = { workspace = true }
+spl-token-2022 = { workspace = true, features = ["no-entrypoint"] }
+spl-transfer-hook-interface = { workspace = true }
+sss-math = { path = "../../modules/sss-math" }
+sss-roles = { path = "../../modules/sss-roles" }
+sss-compliance = { path = "../../modules/sss-compliance" }
+spl-token-metadata-interface = { workspace = true }

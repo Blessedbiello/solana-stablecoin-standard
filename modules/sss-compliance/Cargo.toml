@@ -1,0 +1,8 @@
+[package]
+name = "sss-compliance"
+version = "0.1.0"
+description = "Solana Stablecoin Standard — Compliance helpers and PDA derivations"
+edition = "2021"
+
+[dependencies]
+anchor-lang = { workspace = true }
